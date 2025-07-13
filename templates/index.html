@@ -124,25 +124,31 @@
 
         .url-item {
             background: rgba(74, 124, 89, 0.4);
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
             border-left: 4px solid #90ee90;
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 15px;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .url-item:hover {
             background: rgba(74, 124, 89, 0.6);
-            transform: translateX(10px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .url-content {
             flex: 1;
+            min-width: 0;
+        }
+
+        .url-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
         }
 
         .delete-btn {
@@ -152,17 +158,39 @@
             padding: 8px 12px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .delete-btn:hover {
             background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
             transform: translateY(-1px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (min-width: 768px) {
+            .url-item {
+                flex-direction: row;
+                align-items: flex-start;
+                padding: 20px;
+            }
+
+            .url-item:hover {
+                transform: translateX(10px);
+            }
+
+            .url-item-row {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .delete-btn {
+                font-size: 14px;
+            }
         }
 
         .url-link {
@@ -258,14 +286,16 @@
                 <div class="url-list">
                     {% for url in urls %}
                         <div class="url-item">
-                            <div class="url-content">
-                                <a href="{{ url.url }}" target="_blank" class="url-link">{{ url.url }}</a>
-                                <div class="url-date">🕐 Added: {{ url.created_at }}</div>
+                            <div class="url-item-row">
+                                <div class="url-content">
+                                    <a href="{{ url.url }}" target="_blank" class="url-link">{{ url.url }}</a>
+                                    <div class="url-date">🕐 Added: {{ url.created_at }}</div>
+                                </div>
+                                <form method="post" action="/delete-url-form" style="margin: 0;">
+                                    <input type="hidden" name="url_id" value="{{ url.id }}">
+                                    <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this URL?')">🗑️ Delete</button>
+                                </form>
                             </div>
-                            <form method="post" action="/delete-url-form" style="margin: 0;">
-                                <input type="hidden" name="url_id" value="{{ url.id }}">
-                                <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this URL?')">🗑️ Delete</button>
-                            </form>
                         </div>
                     {% endfor %}
                 </div>
